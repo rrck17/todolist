@@ -1,10 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+
 </head>
+
 <body>
+<div layout:fragment="content">
+  <div class="wrap">
+    <main id="main">
+      <!-- ======= Insert Form Section ======= -->
+      <section id="faq1" class="faq">
+        <div class="container">
+          <div class="section-title" data-aos="fade-down">
+            <h2></h2>
+          </div>
+          <form th:action="@{/insert}" method="post" class="insert-form">
+            <div class="faq-list">
+              <ul>
+                <li data-aos="fade-up">
+                  <i class="bx bx-help-circle icon-help"></i>
+                  <a data-bs-toggle="collapse" class="collapse" data-bs-target="#insert-form">
+                    할일 적기
+                    <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i>
+                  </a>
+                  <div id="insert-form" class="collapse show" data-bs-parent=".faq-list">
+                    <div class="form-group mt-3">
+                      <input type="text" name="title" class="form-control" placeholder="제목" required>
+                    </div>
+                    <div class="form-group mt-3">
+                      <textarea name="content" class="form-control" placeholder="내용" required></textarea>
+                    </div>
+                    <div class="form-group mt-3">
+                      <select name="level" class="form-select" required style="width: 200px; border-radius: 5px; background-color: #f8f9fa;">
+                        <option value="" disabled selected style="display: none;">중요도 선택</option>
+                        <option value="매우 중요">매우 중요</option>
+                        <option value="중요">중요</option>
+                        <option value="보통">보통</option>
+                        <option value="안중요">안중요</option>
+                      </select>
+                    </div>
+                    <div class="form-group mt-3 text-end">
+                      <button type="submit" class="btn btn-primary">추가</button>
+                      <button type="button" class="btn btn-secondary">리셋</button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </form>
+        </div>
+      </section><!-- End Insert Form Section -->
+
+      <!-- ======= List Section ======= -->
+      <section id="faq" class="faq">
+        <div class="container"> <!-- 수정된 부분: 여백(margin) 추가 -->
+          <div class="faq-list">
+            <ul>
+              <li data-aos="fade-up" th:each="todo : ${todolistDTOS}">
+                <i class="bx bx-help-circle icon-help"></i>
+                <a data-bs-toggle="collapse" class="collapse" th:href="'#faq-list-' + ${todo.id}">
+                  <span th:text="${todo.title}"></span> <!-- 제목 출력 -->
+                  <a th:href="@{'/delete/' + ${todo.id}}" class="btn btn-danger btn-sm float-end">삭제</a>
+                  <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i>
+                </a>
+                <div th:id="'faq-list-' + ${todo.id}" class="collapse" data-bs-parent=".faq-list">
+                  <p th:text="${todo.content}"></p> <!-- 내용 출력 -->
+                  <p th:text="${todo.level}"></p> <!-- 중요도 출력 -->
+                  <p th:text="${@dateFormat.formatDate(todo.modDate)}"></p> <!-- 등록일 -->
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section><!-- End List Section -->
+
+
+      <!-- ======= Pagination Section ======= -->
+      <section id="faq2" class="faq">
+        <div class="container">
+          <ul class="mt-3 pagination justify-content-center">
+            <li class="page-item" th:classappend="${todolistDTOS.hasPrevious()} ? '' : 'disabled'">
+              <a class="page-link" th:if="${todolistDTOS.hasPrevious()}" th:href="@{/(page=${todolistDTOS.number})}">
+                Prev
+              </a>
+            </li>
+            <span th:each="pageNo : ${#numbers.sequence(1, todolistDTOS.totalPages)}">
+              <li class="page-item" th:class="${pageNo == todolistDTOS.number + 1} ? 'active' : ''">
+                <a class="page-link" th:href="@{/(page=${pageNo})}" th:text="${pageNo}"></a>
+              </li>
+            </span>
+            <li class="page-item" th:classappend="${todolistDTOS.hasNext()} ? '' : 'disabled'">
+              <a class="page-link" th:if="${todolistDTOS.hasNext()}" th:href="@{/(page=${todolistDTOS.number + 2})}" th:text="'Next'"></a>
+            </li>
+          </ul>
+        </div>
+      </section><!-- End Pagination Section -->
+
+    </main><!-- End #main -->
+  </div>
+</div>
 
 </body>
+
 </html>

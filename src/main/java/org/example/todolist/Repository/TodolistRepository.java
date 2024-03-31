@@ -1,4 +1,10 @@
 package org.example.todolist.Repository;
 
-public class TodolistRepository {
+import org.example.todolist.Entity.TodolistEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface TodolistRepository extends JpaRepository<TodolistEntity, Long> {
+
 }
